@@ -1,0 +1,142 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: java-cicd-app
+  namespace: production
+  labels:
+    app: java-cicd-app
+    version: "1.0"
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: java-cicd-app
+  template:
+    metadata:
+      labels:
+        app: java-cicd-app
+        version: "1.0"
+    spec:
+      containers:
+      - name: java-cicd-app
+        image: sagar1602/java-cicd-app:latest
+        imagePullPolicy: Always
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: JAVA_OPTS
+          value: "-Xmx512m -Xms256m"
+        - name: ENVIRONMENT
+          value: "production"
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1024Mi
+        livenessProbe:
+          httpGet:
+            path: /api/status
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /api/hello
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: 1000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: java-cicd-app-service
+  namespace: production
+  labels:
+    app: java-cicd-app
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+  selector:
+    app: java-cicd-app
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: java-cicd-app-hpa
+  namespace: production
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: java-cicd-app
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: java-cicd-app-config
+  namespace: production
+data:
+  application.properties: |
+    spring.application.name=java-cicd-app
+    server.port=8080
+    logging.level.root=INFO
+    logging.level.com.cicdpractice=DEBUG
+    management.endpoints.web.exposure.include=health,info,metrics
+
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: java-cicd-app-pdb
+  namespace: production
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: java-cicd-app

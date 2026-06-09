@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  java-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: java-cicd-app
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx512m -Xms256m
+      - ENVIRONMENT=development
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - cicd-network
+    restart: unless-stopped
+    volumes:
+      - app-logs:/app/logs
+
+  # Optional: Add a database service
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: java-cicd-db
+  #   environment:
+  #     POSTGRES_USER: cicduser
+  #     POSTGRES_PASSWORD: cicdpass
+  #     POSTGRES_DB: cicddb
+  #   ports:
+  #     - "5432:5432"
+  #   networks:
+  #     - cicd-network
+  #   volumes:
+  #     - db-data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+
+networks:
+  cicd-network:
+    driver: bridge
+
+volumes:
+  app-logs:
+  # db-data:
