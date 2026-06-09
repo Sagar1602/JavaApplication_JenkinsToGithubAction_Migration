@@ -34,7 +34,7 @@ jobs:
       - name: Building The Application with Maven
         uses: actions/setup-java@v4
         with:
-          distribution: temurine
+          distribution: temurin
           java-version: 17
 
       - name: Checking Maven version
