@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Building the Docker Image
-        run: docker build -t ${{DOCKER_IMAGE}} .
+        run: docker build -t ${{env.DOCKER_IMAGE}} .
 
   Push_To_DockerHUB:
     needs: Docker_Image
@@ -71,7 +71,7 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Pushing  image to Dockerhub
-        run: docker push ${{secrets.DOCKER_USERNAME}}/${{APP_NAME}}:${{git.run_number}}
+        run: docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{git.run_number}}
 
 
   POST:
