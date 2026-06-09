@@ -92,7 +92,8 @@ jobs:
           echo "DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV  
 
       - name: Print Docker Image
-        run: echo $DOCKER_IMAGE  
+        run: echo $DOCKER_IMAGE
+  
 
       - name: Login to Dockerhub
         uses: docker/login-actions@v4
