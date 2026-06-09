@@ -31,6 +31,9 @@ jobs:
     needs: Code_Checkout
     runs-on: ubuntu-latest
     steps:
+      - name: code checkout
+        uses: actions/checkout@v4
+
       - name: Building The Application with Maven
         uses: actions/setup-java@v4
         with:
@@ -52,6 +55,9 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     steps:
+      - name: code checkout
+        run: actions/checkout@v4
+
       - name: Downlaoding the Artifacts
         uses: actions/download-artifact@v4
 
@@ -62,6 +68,9 @@ jobs:
     needs: Code_Analysis
     runs-on: ubuntu-latest
     steps:
+      - name: code checkout
+        run: actions/checkout@v4
+
       - name: Building the Docker Image
         run: docker build -t ${{env.DOCKER_IMAGE}} .
 
@@ -70,6 +79,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'ref/heads/main'
     steps:
+      - name: code checkout
+        run: actions/checkout@v4
+
       - name: Login to Dockerhub
         uses: docker/login-actions@v4
         with:
@@ -86,6 +98,9 @@ jobs:
     runs-on: ubuntu-latest
     if: always()
     steps: 
+      - name: code checkout
+        run: actions/checkout@v4
+        
       - name: Execution Message
         run: echo "The WorkFlow Execution is completed successfully"         
         
