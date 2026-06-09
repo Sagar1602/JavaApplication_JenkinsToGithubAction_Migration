@@ -2,7 +2,7 @@ name: workflow-1
 on:
   push
     branches:
-      - main  
+      - main 
 
 env: 
   registry: docker.io
