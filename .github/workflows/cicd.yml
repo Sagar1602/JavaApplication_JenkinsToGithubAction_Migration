@@ -28,7 +28,7 @@ jobs:
       - name: Print Docker Image
         run: echo $DOCKER_IMAGE
   Build:
-  
+
     needs: Code_Checkout
     runs-on: self-hosted
     steps:
@@ -80,7 +80,7 @@ jobs:
 
       - name: Pushing  image to Dockerhub
         run: |
-          docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{github.run_number}}
+          sudo docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{github.run_number}}
 
 
   POST:
