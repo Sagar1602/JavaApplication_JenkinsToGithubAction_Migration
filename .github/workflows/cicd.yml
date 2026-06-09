@@ -82,7 +82,7 @@ jobs:
   Push_To_DockerHUB:
     needs: Docker_Image
     runs-on: ubuntu-latest
-    if: github.ref == 'ref/heads/main'
+    
     steps:
       - name: code checkout
         uses: actions/checkout@v4
@@ -93,7 +93,7 @@ jobs:
 
       - name: Print Docker Image
         run: echo $DOCKER_IMAGE
-  
+    
 
       - name: Login to Dockerhub
         uses: docker/login-actions@v4
