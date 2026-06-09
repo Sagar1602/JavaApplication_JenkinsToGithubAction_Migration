@@ -9,8 +9,7 @@ env:
   registry: docker.io
   APP_NAME: java-cicd-app
   APP_VERSION: 1.1.0
-  //DOCKER_IMAGE: |
-  //   ${{secrets.DOCKER_USERNAME}}/${{APP_NAME}}:${{github.run_number}}
+
 
 jobs:
   Code_Checkout:
