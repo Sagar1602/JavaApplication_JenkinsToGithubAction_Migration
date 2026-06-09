@@ -49,7 +49,7 @@ jobs:
           name: target
           path: target/  
   Code_Analysis:
-    needs: Code_Checkout & Build
+    needs: Build
     runs-on: ubuntu-latest
     steps:
       - name: Downlaoding the Artifacts
