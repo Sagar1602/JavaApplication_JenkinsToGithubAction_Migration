@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Code Fetched Message
-        run: echo"the Code is fetched to the runner"
+        run: echo "the Code is fetched to the runner"
 
       - name: Set Docker Image
         run: |
