@@ -66,7 +66,7 @@ jobs:
     if: github.ref == 'ref/heads/main'
     steps:
       - name: Login to Dockerhub
-        runs: docker/login-actions@v4
+        uses: docker/login-actions@v4
         with:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWORD}}
