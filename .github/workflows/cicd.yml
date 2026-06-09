@@ -27,6 +27,8 @@ jobs:
 
       - name: Print Docker Image
         run: echo $DOCKER_IMAGE
+      - name: Sudo docker images 
+        run: sudo docker images
   Build:
 
     needs: Code_Checkout
