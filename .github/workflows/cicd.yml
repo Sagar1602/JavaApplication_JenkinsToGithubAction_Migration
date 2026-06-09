@@ -1,0 +1,28 @@
+name: workflow-1
+on:
+  push
+    branches: main
+
+env: 
+  registry: docker.io
+  APP_NAME: java-cicd-app
+  APP_VERSION: 1.1.0
+  DOCKER_IMAGE: sagar1602/${{APP_NAME}:${{BUILD_NUMBER}}}
+
+jobs:
+  Code_Checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
+      - name: Code Fetched Message
+        run: echo"the Code is fetched to the runner"
+
+  Build:
+    needs: Code_Checkout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Building The Application with Maven
+        uses: actions/setup-java@v4
+        with:         
