@@ -21,15 +21,6 @@ jobs:
       - name: Code Fetched Message
         run: echo "the Code is fetched to the runner"
 
-      - name: Build Docker Image
-        run: |
-          DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}
-          sudo docker build -t "$DOCKER_IMAGE" .
-
-      - name: Print Docker Image
-        run: echo $DOCKER_IMAGE
-      - name: Sudo docker images 
-        run: sudo docker images
   Build:
 
     needs: Code_Checkout
@@ -61,7 +52,16 @@ jobs:
         uses: actions/download-artifact@v4
 
       - name: Code Code_Analysis
-        run: echo "checking the  code quality and Leakage"                        
+        run: echo "checking the  code quality and Leakage"
+      - name: Build Docker Image
+        run: |
+          DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}
+          sudo docker build -t "$DOCKER_IMAGE" .
+
+      - name: Print Docker Image
+        run: echo $DOCKER_IMAGE
+      - name: Sudo docker images 
+        run: sudo docker images                          
   
   Docker_Image:
     needs: Code_Analysis
