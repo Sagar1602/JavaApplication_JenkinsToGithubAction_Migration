@@ -9,7 +9,7 @@ env:
   registry: docker.io
   APP_NAME: java-cicd-app
   APP_VERSION: 1.1.0
-  DOCKER_IMAGE: ${{secrets.DOCKER_USERNAME}}/${{APP_NAME}:${{github.run_number}}}
+  DOCKER_IMAGE: ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}:${{github.run_number}}}
 
 jobs:
   Code_Checkout:
@@ -46,6 +46,9 @@ jobs:
     needs: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Downlaoding the Artifacts
+        uses: actions/download-artifact@v4
+
       - name: Code Code_Analysis
         run: echo "checking the  code quality and Leakage"                        
   
@@ -54,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Building the Docker Image
-        runs: docker build -t ${{DOCKER_IMAGE}} .
+        run: docker build -t ${{DOCKER_IMAGE}} .
 
   Push_To_DockerHUB:
     needs: Docker_Image
