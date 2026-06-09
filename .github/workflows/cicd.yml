@@ -24,6 +24,7 @@ jobs:
       - name: Set Docker Image
         run: |
           echo "DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV  
+
       - name: Print Docker Image
         run: echo $DOCKER_IMAGE
   Build:
@@ -33,7 +34,7 @@ jobs:
       - name: Building The Application with Maven
         uses: actions/setup-java@v4
         with:
-          distrubution: temurine
+          distribution: temurine
           java-version: 17
 
       - name: Checking Maven version
