@@ -71,8 +71,13 @@ jobs:
       - name: code checkout
         uses: actions/checkout@v4
 
-      - name: Building the Docker Image
-        run: docker build -t ${{env.DOCKER_IMAGE}} .
+      - name: Set Docker Image
+        run: |
+          echo "DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV  
+
+      - name: Print Docker Image
+        run: echo $DOCKER_IMAGE
+  
 
   Push_To_DockerHUB:
     needs: Docker_Image
@@ -81,6 +86,13 @@ jobs:
     steps:
       - name: code checkout
         uses: actions/checkout@v4
+
+      - name: Set Docker Image
+        run: |
+          echo "DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV  
+
+      - name: Print Docker Image
+        run: echo $DOCKER_IMAGE  
 
       - name: Login to Dockerhub
         uses: docker/login-actions@v4
