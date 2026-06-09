@@ -83,7 +83,7 @@ jobs:
 
       - name: Pushing  image to Dockerhub
         run: |
-          sudo docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{github.run_number}}
+          docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{github.run_number}}
 
 
   POST:
