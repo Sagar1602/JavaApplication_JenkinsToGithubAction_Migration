@@ -28,6 +28,7 @@ jobs:
       - name: Print Docker Image
         run: echo $DOCKER_IMAGE
   Build:
+  
     needs: Code_Checkout
     runs-on: self-hosted
     steps:
@@ -48,6 +49,7 @@ jobs:
         with:
           name: target
           path: target/  
+
   Code_Analysis:
     needs: Build
     runs-on: self-hosted
