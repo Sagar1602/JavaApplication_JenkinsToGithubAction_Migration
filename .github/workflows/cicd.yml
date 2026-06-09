@@ -9,7 +9,8 @@ env:
   registry: docker.io
   APP_NAME: java-cicd-app
   APP_VERSION: 1.1.0
-  DOCKER_IMAGE: ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}:${{github.run_number}}}
+  DOCKER_IMAGE: |
+     ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}:${{github.run_number}}}
 
 jobs:
   Code_Checkout:
@@ -71,7 +72,8 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Pushing  image to Dockerhub
-        run: docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{git.run_number}}
+        run: |
+          docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{git.run_number}}
 
 
   POST:
