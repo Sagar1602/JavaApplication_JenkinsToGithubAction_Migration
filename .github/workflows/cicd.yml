@@ -7,7 +7,7 @@ env:
   registry: docker.io
   APP_NAME: java-cicd-app
   APP_VERSION: 1.1.0
-  DOCKER_IMAGE: sagar1602/${{APP_NAME}:${{BUILD_NUMBER}}}
+  DOCKER_IMAGE: ${{secrets.DOCKER_USERNAME}}/${{APP_NAME}:${{github.run_number}}}
 
 jobs:
   Code_Checkout:
@@ -25,4 +25,55 @@ jobs:
     steps:
       - name: Building The Application with Maven
         uses: actions/setup-java@v4
-        with:         
+        with:
+          distrubution: temurine
+          java-version: 17
+
+      - name: Checking Maven version
+        run: mvn --version
+
+      - name: Cleaning the Old Artifacts
+        run: mvn clean package -DskipTests
+
+      - name: storing the new Artifacts
+        uses: actions/uplaod-artifact@v4
+        with:
+          name: target
+          path: target/  
+  Code_Analysis:
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Code_Analysis
+        run: echo "checking the  code quality and Leakage"                        
+  
+  Docker_Image:
+    needs: Code_Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Building the Docker Image
+        runs: docker build -t ${{DOCKER_IMAGE}} .
+
+  Push_To_DockerHUB:
+    needs: Docker_Image
+    runs-on: ubuntu-latest
+    if: github.ref == 'ref/heads/main'
+    steps:
+      - name: Login to Dockerhub
+        runs: docker/login-actions@v4
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+
+      - name: Pushing  image to Dockerhub
+        run: docker push ${{secrets.DOCKER_USERNAME}}/${{APP_NAME}}:${{git.run_number}}
+
+
+  POST:
+    needs: Push_To_DockerHUB
+    runs-on: ubuntu-latest
+    if: always()
+    steps: 
+      - name: Execution Message
+        run: echo "The WorkFlow Execution is completed successfully"         
+        
