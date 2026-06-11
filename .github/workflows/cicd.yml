@@ -24,10 +24,12 @@ jobs:
   Build:
 
     needs: Code_Checkout
-    runs-on: ubuntu-latest
+    
     strategy:
       matrix:
         java-version: [8,17,21]
+        os: [ubuntu-latest, windows-latest, macOS-latest ]
+    runs-on: ${{ matrix.os }}    
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
