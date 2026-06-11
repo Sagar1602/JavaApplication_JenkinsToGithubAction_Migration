@@ -13,7 +13,7 @@ env:
 
 jobs:
   Code_Checkout :
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
@@ -24,11 +24,14 @@ jobs:
   Build:
 
     needs: Code_Checkout
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         java-version: [8,17,21]
     steps:
+      - name: Code Checkout
+        uses: actions/checkout@v4
+
       - name: Building The Application with Maven
         uses: actions/setup-java@v4
         with:
