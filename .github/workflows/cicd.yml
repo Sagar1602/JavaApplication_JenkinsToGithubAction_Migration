@@ -25,12 +25,15 @@ jobs:
 
     needs: Code_Checkout
     runs-on: self-hosted
+    strategy:
+      matrix:
+        java-version: [8,17,21]
     steps:
       - name: Building The Application with Maven
         uses: actions/setup-java@v4
         with:
          distribution: temurin
-         java-version: '17'
+         java-version: ${{matrix.java-version:}}
 
       - name: Checking Maven version
         run: mvn --version
@@ -53,6 +56,9 @@ jobs:
 
       - name: Code Code_Analysis
         run: echo "checking the  code quality and Leakage"
+
+      - name: user info
+        run: echo "whoami" 
       - name: Build Docker Image
         run: |
           DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${{ env.APP_NAME }}:${{ github.run_number }}
