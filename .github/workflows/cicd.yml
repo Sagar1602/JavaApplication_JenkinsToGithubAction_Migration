@@ -13,7 +13,7 @@ env:
 
 jobs:
   Code_Checkout :
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
@@ -24,12 +24,7 @@ jobs:
   Build:
 
     needs: Code_Checkout
-    
-    strategy:
-      matrix:
-        java-version: [8,17,21]
-        os: [ubuntu-latest, windows-latest, macOS-latest ]
-    runs-on: ${{ matrix.os }}    
+    runs-on: self-hosted    
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
@@ -38,7 +33,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
          distribution: temurin
-         java-version: ${{matrix.java-version}}
+         java-version: '17'
 
       - name: Checking Maven version
         run: mvn --version
@@ -99,7 +94,7 @@ jobs:
 
   POST:
     needs: Push_To_DockerHUB
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: always()
     steps: 
       - name: code checkout
