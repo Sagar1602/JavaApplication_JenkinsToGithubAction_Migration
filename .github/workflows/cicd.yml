@@ -115,7 +115,7 @@ jobs:
       - name: Sending the Notification
         run: |
           curl -X POST \
-          -H "Context-Type: application/json" \
+          -H "Content-Type: application/json" \
           -d '{
             "text": "🚀 GitHub Actions Report
 
@@ -128,10 +128,10 @@ jobs:
           BUILD: ${{ needs.Build.result }}
           CODE_ANALYSIS: ${{ needs.Code_Analysis.result }}
           DOCKER_Image: ${{ needs.Docker_Image.result }}
-          PUSH_To_Dockerhub: ${{needs.Push_To_DockerHUB}}
+          PUSH_To_Dockerhub: ${{needs.Push_To_DockerHUB.result}}
 
           View Run:
           https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           }' \
-          ${{secrets.TEAM_WEBHOOL_URL}}         
+          "${{secrets.TEAM_WEBHOOK_URL}}"        
         
