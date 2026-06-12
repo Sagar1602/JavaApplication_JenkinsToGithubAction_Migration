@@ -20,7 +20,7 @@ jobs:
         run: |
           echo "Cleaning workspace..."
           rm -rf ${{ github.workspace }}/* || true
-          
+
       - name: Code Checkout
         uses: actions/checkout@v4
 
@@ -104,7 +104,7 @@ jobs:
 
 
   Sending_Notification:
-    needs: |
+    needs:
       - Build
       - Code_Analysis
       - Docker_Image
