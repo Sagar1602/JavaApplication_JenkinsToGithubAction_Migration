@@ -12,9 +12,15 @@ env:
 
 
 jobs:
+  
   Code_Checkout :
     runs-on: self-hosted
     steps:
+      - name: Clean workspace
+        run: |
+          echo "Cleaning workspace..."
+          rm -rf ${{ github.workspace }}/* || true
+          
       - name: Code Checkout
         uses: actions/checkout@v4
 
@@ -91,15 +97,41 @@ jobs:
         run: |
           docker push ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{github.run_number}}
 
+      - name: Deleting the docker image from the local
+        run: |
+          docker rmi ${{secrets.DOCKER_USERNAME}}/${{env.APP_NAME}}:${{github.run_number}} || true
 
-  POST:
-    needs: Push_To_DockerHUB
+
+
+  Sending_Notification:
+    needs: |
+      - Build
+      - Code_Analysis
+      - Docker_Image
+      - Push_To_DockerHUB
     runs-on: self-hosted
     if: always()
     steps: 
-      - name: code checkout
-        uses: actions/checkout@v4
+      - name: Sending the Notification
+        run: |
+          curl -X POST \
+          - H "Context-Type: application/json" \
+          -d '{
+            "text": "🚀 GitHub Actions Report
 
-      - name: Execution Message
-        run: echo "The WorkFlow Execution is completed successfully"         
+          Workflow: ${{ github.workflow }}
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref_name }}
+          Triggered By: ${{ github.actor }}
+          Run Number: ${{ github.run_number }}
+
+          BUILD: ${{ needs.Build.result }}
+          CODE_ANALYSIS: ${{ needs.Code_Analysis.result }}
+          DOCKER_Image: ${{ needs.Docker_Image.result }}
+          PUSH_To_Dockerhub: ${{needs.Push_To_DockerHUB}}
+
+          View Run:
+          https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          }' \ 
+          ${{secrets.TEAM_WEBHOOL_URL}}         
         
